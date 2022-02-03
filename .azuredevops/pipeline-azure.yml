@@ -1,0 +1,34 @@
+variables:
+- template: /modules/variables/load-variables.yml@Pipelines
+
+- name: archetype
+  value: java/api-helm-k8s
+
+trigger:
+  batch: true
+  branches:
+    include:
+    - dev_integracao
+    - develop
+    - release
+    - master
+    - main
+    - refs/tags/*
+  paths:
+    include:
+    - '*'
+    exclude:
+    - .azuredevops/*
+    - docs/*
+    - catalog-info.yaml
+    - mkdocs.yml 
+
+resources:
+  repositories:
+  - repository: Pipelines
+    name: Hefesto/Hefesto.Core.Pipelines
+    type: git
+    ref: refs/tags/v1-latest
+    endpoint: HefestoPipelines
+stages:
+- template: /archetypes/${{variables.archetype}}.yml@Pipelines

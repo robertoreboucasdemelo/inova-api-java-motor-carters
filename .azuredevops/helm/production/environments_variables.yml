@@ -1,0 +1,12 @@
+# NUNCA DEFINA VALORES SECRETOS AQUI. Utilize o secrets.yml na raiz do .azuredevops
+env:
+- name: EUREKA_SERVER_URL
+  value: http://eureka-server.default:8761/eureka
+- name: JAVA_OPTS_MEMORY_MIN
+  value: 128m
+- name: JAVA_OPTS_MEMORY_MAX
+  value: 256m
+- name: JAVA_OPTS_METASPACE_MIN
+  value: 64m
+- name: JAVA_OPTS_METASPACE_MAX
+  value: 128m

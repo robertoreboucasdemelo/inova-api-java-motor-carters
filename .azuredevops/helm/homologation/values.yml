@@ -1,0 +1,42 @@
+containerPort: 8082
+
+
+httpHostname: inova-api-java-motor-carters.k8s-corp.uat.riachuelo.net.br
+httpsHostname: inova-api-java-motor-carters.k8s-corp.uat.riachuelo.net.br
+k8sContext: eks-shared-uat-corp-rchlo
+tlsSecretName: eks-shared-uat-corp-rchlo    
+
+
+
+
+initialReplicas: 1
+configMapKeys: []
+livenessProbe:
+  httpGet:
+    path: /actuator/health
+    port: 8082
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 5
+readinessProbe:
+  httpGet:
+    path: /actuator/health
+    port: 8082
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+resources:
+  requests:
+    memory: 256M
+    cpu: 150m
+  limits:
+    memory: 512M
+    cpu: 1000m
+hpa:
+  maxReplicas: 2
+  minReplicas: 1
+  targetCPUUtilizationPercentage: 75

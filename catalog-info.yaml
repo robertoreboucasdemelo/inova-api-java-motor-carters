@@ -1,0 +1,38 @@
+#+----------------------------------------------------------+
+#|               Evite alterar este arquivo                 |
+#|              Só altere se for recomendado                |
+#| Alterações erradas podem impactar a entrega da aplicação |
+#+----------------------------------------------------------+
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: inova-api-java-motor-carters
+  description: API para realizar calculo de comissões carters
+  tags:
+    - java-14
+    - springboot
+    - api
+    - microservice
+    - devops-rchlo
+    - tribe-inova    
+  annotations:
+    # Backstage default annotations
+    backstage.io/techdocs-ref: dir:.
+    sonarqube.org/project-key: inova-api-java-motor-carters
+    backstage.io/code-coverage: scm-only
+    backstage.io/kubernetes-id: "inova-api-java-motor-carters"  
+
+    # Custom Annotations
+    rchlo.io/risk-score: "1"
+    rchlo.io/helm-chart-name: "stable/api-microservice"
+    rchlo.io/jira-company-label: "RIACHUELO"
+    rchlo.io/jira-tribe-label: "INOVA"
+    rchlo.io/jira-squad-label: "SQUAD INOVA"    
+
+
+spec:
+  type: service
+  lifecycle: experimental   
+  owner: "squad-inova-47238"
+  providesApis:
+    - inova-api-java-motor-carters

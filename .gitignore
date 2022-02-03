@@ -1,0 +1,9 @@
+/.classpath
+/.project
+/testdb.lck
+/testdb.log
+/testdb.properties
+/testdb.script
+/target/
+/.settings/
+*.log*

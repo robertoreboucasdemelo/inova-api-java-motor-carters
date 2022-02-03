@@ -1,0 +1,83 @@
+##########
+#                                  _ _
+#        _ __   __ _  ___     __ _| | |_ ___ _ __ __ _ _ __
+#       | '_ \ / _` |/ _ \   / _` | | __/ _ \ '__/ _` | '__|
+#       | | | | (_| | (_) | | (_| | | ||  __/ | | (_| | |
+#       |_| |_|\__,_|\___/   \__,_|_|\__\___|_|  \__,_|_|
+#
+#                              _ ._  _ , _ ._
+#                            (_ ' ( `  )_  .__)
+#                          ( (  (    )   `)  ) _)
+#                         (__ (_   (_ . _) _) ,__)
+#                             `~~`\ ' . /`~~`
+#                             ,::: ;   ; :::,
+#                            ':::::::::::::::'
+#    _____________________________/_____\_______________________________
+#   |                                                                   |
+#   |        QUALQUER ALTERAÇÃO AQUI PODERÁ IMPACTAR A ESTEIRA          |
+#   |    SÓ ALTERE SE FOR RECOMENDADO OU SE SOUBER O QUE ESTÁ FAZENDO   |
+#   |___________________________________________________________________|
+#
+#
+#   Não altere esse arquivo, exceto se recomendado ou se souber exatamente o que estiver fazendo
+#   Este arquivo é utilizado como PONTE de comunicação entre esteira e o repositório
+#   Os comandos ficam aqui para trazer flexibilidade e autonomia ao projeto e seus contribuidores
+#   Toda e qualquer alteração neste arquivo PODE impactar o funcionando da esteira
+#
+##########
+
+version: "3"
+
+vars:
+  DOCKER_USER:
+    sh: "if [ {{OS}} == 'windows' ]; then echo '1000'; else echo $(id -u); fi"
+  DOCKER_GROUP:
+    sh: "if [ {{OS}} == 'windows' ]; then echo '1000'; else echo $(id -g); fi"
+  DOCKER_WORKDIR: /app/sources/
+  DOCKER_NPM_CACHE_FOLDER: /tmp/.npm
+  DOCKER_IMAGE_BUILDER: builder:latest
+  DOCKER_IMAGE_RUNTIME: runtime:latest
+  DOCKER_REGISTRY: "rchlo.azurecr.io"
+  GITLOG_COUNT: "{{.GITLOG_COUNT | default 10}}"
+  DEPLOY_ENVIRONMENT: homologation
+
+ 
+dotenv: ['.env']
+
+tasks:
+  default:
+    cmds:
+      - task --help
+      - task --list
+
+  docker:login:
+    desc: "Realiza Login no registry da rchlo"
+    cmds:
+      - az account show --output none --subscription shared-PROD || az login --output none
+      - echo $(az acr login -n {{.DOCKER_REGISTRY}} --expose-token --query accessToken --output tsv) | docker login {{.DOCKER_REGISTRY}} -u 00000000-0000-0000-0000-000000000000 --password-stdin
+
+  docker:login-windows:
+    desc: "Realiza Login no registry da rchlo"
+    cmds:
+      - echo "Acesse e siga as instruções https://docs.microsoft.com/pt-br/azure/container-registry/container-registry-authentication?tabs=azure-powershell"
+      - echo "1. Execute o seguinte comnado para logar" 
+      - echo "az login"
+      - echo "2. Execute seguinte comando para selecionar o seu ACR"
+      - echo "az acr login --name {{.DOCKER_REGISTRY}}"
+      - echo "3. Obtenha o seu token com o seguinte comando"
+      - echo "az acr login --name {{.DOCKER_REGISTRY}} --expose-token --output tsv --query accessToken"
+      - echo "4. Execute o comando abaixo para logar o seu Docker e forneça o token obtido no passo acima"
+      - echo "docker login {{.DOCKER_REGISTRY}} --username 00000000-0000-0000-0000-000000000000 --password [TOKEN_DO_PASSO_ACIMA]"
+    silent: true
+
+  doc:
+    cmds:
+      - >
+        docker run \
+          --user="{{.DOCKER_USER}}:{{.DOCKER_GROUP}}" \
+          --rm \
+          -p 8000:8000 \
+          -v $(pwd):/content \
+          --workdir=/content \
+          rchlo.azurecr.io/corporative/tools/mkdocs serve -a 0.0.0.0:8000
+

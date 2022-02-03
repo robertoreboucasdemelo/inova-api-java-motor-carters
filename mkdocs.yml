@@ -1,0 +1,10 @@
+site_name: inova-api-java-motor-carters
+site_description: API para realizar calculo de comissões carters
+
+theme: readthedocs
+
+nav:
+  - Introduction: index.md
+
+plugins:
+  - techdocs-core
